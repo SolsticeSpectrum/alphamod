@@ -1399,10 +1399,10 @@ public class World implements IBlockAccess {
 		} else {
 			++this.field_4265_J;
 
-			boolean var2;
 			try {
 				int var1 = 500;
 
+				boolean var2;
 				while(this.field_821_y.size() > 0) {
 					--var1;
 					if(var1 <= 0) {
@@ -1414,11 +1414,10 @@ public class World implements IBlockAccess {
 				}
 
 				var2 = false;
+				return var2;
 			} finally {
 				--this.field_4265_J;
 			}
-
-			return var2;
 		}
 	}
 
@@ -1431,41 +1430,41 @@ public class World implements IBlockAccess {
 			++field_4268_y;
 
 			try {
-				if(field_4268_y != 50) {
-					int var9 = (var5 + var2) / 2;
-					int var10 = (var7 + var4) / 2;
-					if(!this.blockExists(var9, 64, var10)) {
-						return;
-					}
-
-					if(this.getChunkFromBlockCoords(var9, var10).func_21101_g()) {
-						return;
-					}
-
-					int var11 = this.field_821_y.size();
-					int var12;
-					if(var8) {
-						var12 = 5;
-						if(var12 > var11) {
-							var12 = var11;
-						}
-
-						for(int var13 = 0; var13 < var12; ++var13) {
-							MetadataChunkBlock var14 = (MetadataChunkBlock)this.field_821_y.get(this.field_821_y.size() - var13 - 1);
-							if(var14.field_957_a == var1 && var14.func_692_a(var2, var3, var4, var5, var6, var7)) {
-								return;
-							}
-						}
-					}
-
-					this.field_821_y.add(new MetadataChunkBlock(var1, var2, var3, var4, var5, var6, var7));
-					var12 = 1000000;
-					if(this.field_821_y.size() > 1000000) {
-						System.out.println("More than " + var12 + " updates, aborting lighting updates");
-						this.field_821_y.clear();
-					}
-
+				if(field_4268_y == 50) {
 					return;
+				}
+
+				int var9 = (var5 + var2) / 2;
+				int var10 = (var7 + var4) / 2;
+				if(!this.blockExists(var9, 64, var10)) {
+					return;
+				}
+
+				if(this.getChunkFromBlockCoords(var9, var10).func_21101_g()) {
+					return;
+				}
+
+				int var11 = this.field_821_y.size();
+				int var12;
+				if(var8) {
+					var12 = 5;
+					if(var12 > var11) {
+						var12 = var11;
+					}
+
+					for(int var13 = 0; var13 < var12; ++var13) {
+						MetadataChunkBlock var14 = (MetadataChunkBlock)this.field_821_y.get(this.field_821_y.size() - var13 - 1);
+						if(var14.field_957_a == var1 && var14.func_692_a(var2, var3, var4, var5, var6, var7)) {
+							return;
+						}
+					}
+				}
+
+				this.field_821_y.add(new MetadataChunkBlock(var1, var2, var3, var4, var5, var6, var7));
+				var12 = 1000000;
+				if(this.field_821_y.size() > 1000000) {
+					System.out.println("More than " + var12 + " updates, aborting lighting updates");
+					this.field_821_y.clear();
 				}
 			} finally {
 				--field_4268_y;

@@ -1680,40 +1680,46 @@ public class World implements IBlockAccess {
 			++lightingUpdatesScheduled;
 
 			try {
-				if(lightingUpdatesScheduled != 50) {
-					int var9 = (var5 + var2) / 2;
-					int var10 = (var7 + var4) / 2;
-					if(this.blockExists(var9, 64, var10)) {
-						if(!this.getChunkFromBlockCoords(var9, var10).func_21167_h()) {
-							int var11 = this.lightingToUpdate.size();
-							int var12;
-							if(var8) {
-								var12 = 5;
-								if(var12 > var11) {
-									var12 = var11;
-								}
+				if(lightingUpdatesScheduled == 50) {
+					return;
+				}
 
-								for(int var13 = 0; var13 < var12; ++var13) {
-									MetadataChunkBlock var14 = (MetadataChunkBlock)this.lightingToUpdate.get(this.lightingToUpdate.size() - var13 - 1);
-									if(var14.field_1299_a == var1 && var14.func_866_a(var2, var3, var4, var5, var6, var7)) {
-										return;
-									}
-								}
+				int var9 = (var5 + var2) / 2;
+				int var10 = (var7 + var4) / 2;
+				if(!this.blockExists(var9, 64, var10)) {
+					return;
+				}
+
+				if(!this.getChunkFromBlockCoords(var9, var10).func_21167_h()) {
+					int var11 = this.lightingToUpdate.size();
+					int var12;
+					if(var8) {
+						var12 = 5;
+						if(var12 > var11) {
+							var12 = var11;
+						}
+
+						for(int var13 = 0; var13 < var12; ++var13) {
+							MetadataChunkBlock var14 = (MetadataChunkBlock)this.lightingToUpdate.get(this.lightingToUpdate.size() - var13 - 1);
+							if(var14.field_1299_a == var1 && var14.func_866_a(var2, var3, var4, var5, var6, var7)) {
+								return;
 							}
-
-							this.lightingToUpdate.add(new MetadataChunkBlock(var1, var2, var3, var4, var5, var6, var7));
-							var12 = 1000000;
-							if(this.lightingToUpdate.size() > 1000000) {
-								System.out.println("More than " + var12 + " updates, aborting lighting updates");
-								this.lightingToUpdate.clear();
-							}
-
 						}
 					}
+
+					this.lightingToUpdate.add(new MetadataChunkBlock(var1, var2, var3, var4, var5, var6, var7));
+					var12 = 1000000;
+					if(this.lightingToUpdate.size() > 1000000) {
+						System.out.println("More than " + var12 + " updates, aborting lighting updates");
+						this.lightingToUpdate.clear();
+					}
+
+					return;
 				}
 			} finally {
 				--lightingUpdatesScheduled;
 			}
+
 		}
 	}
 

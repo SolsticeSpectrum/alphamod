@@ -31,13 +31,25 @@ subprojects {
     }
 }
 
+task createRunDir {
+    doLast {
+        file("${rootDir}/run").mkdirs()
+    }
+}
+
+task createServerRunDir {
+    doLast {
+        file("${rootDir}/run_server").mkdirs()
+    }
+}
+
 task copyResources(type: Copy) {
     from "${rootDir}/resources"
-    into "${rootDir}/run/.minecraft/resources"
+    into "${rootDir}/run/resources"
 }
 
 task runClient(type: JavaExec) {
-    dependsOn ':client:classes', copyResources
+    dependsOn ':client:classes', createRunDir, copyResources
     group = 'run'
     description = 'runs Minecraft client'
     
@@ -52,15 +64,11 @@ task runClient(type: JavaExec) {
     
     args = [project.property('defaultUsername')]
     
-    environment 'APPDATA': "${rootDir}/run"
-    
-    doFirst {
-        file("${rootDir}/run/.minecraft").mkdirs()
-    }
+    environment 'MCGAMEDIR': "${rootDir}/run"
 }
 
 task runServer(type: JavaExec) {
-    dependsOn ':server:classes'
+    dependsOn ':server:classes', createServerRunDir
     group = 'run'
     description = 'runs Minecraft server'
     
@@ -70,20 +78,16 @@ task runServer(type: JavaExec) {
     workingDir = file("${rootDir}/run_server")
     
     args = ['nogui']
-    
-    doFirst {
-        file("${rootDir}/run_server").mkdirs()
-    }
 }
 
 task genIdeaWorkspace {
     group = 'ide'
     description = 'generates idea configuration'
-    
+
     doLast {
         def file = file('.idea/workspace.xml')
         def project
-        
+
         if (!file.exists() || file.text.trim().empty) {
             file.parentFile.mkdirs()
             file.text = '''
@@ -93,43 +97,41 @@ task genIdeaWorkspace {
                 </project>
             '''.trim()
         }
-        
+
         project = new XmlParser().parse(file)
+
         def manager = project.component.find { it.@name == 'RunManager' }
-        
         if (!manager) {
             manager = project.appendNode('component', [name: 'RunManager'])
         }
-        
+
         manager.configuration.findAll { it.@name == 'Minecraft Client' || it.@name == 'Minecraft Server' }.each { manager.remove(it) }
-        
+
         def client = new Node(null, 'configuration', [name: 'Minecraft Client', type: 'Application', factoryName: 'Application', default: 'false'])
-		
         client.appendNode('option', [name: 'MAIN_CLASS_NAME', value: 'net.minecraft.client.Minecraft'])
         client.appendNode('module', [name: 'Minecraft.client.main'])
         client.appendNode('option', [name: 'WORKING_DIRECTORY', value: '$PROJECT_DIR$/run'])
         client.appendNode('option', [name: 'VM_PARAMETERS', value: [
-            "-Dorg.lwjgl.librarypath=$rootDir/libraries/natives"
+                "-Dorg.lwjgl.librarypath=$rootDir/libraries/natives"
         ].join(' ')])
         client.appendNode('option', [name: 'PROGRAM_PARAMETERS', value: rootProject.property('defaultUsername')])
 
         def env = client.appendNode('envs')
+        env.appendNode('env', [name: 'MCGAMEDIR', value: '$PROJECT_DIR$/run'])
 
-        env.appendNode('env', [name: 'APPDATA', value: '$PROJECT_DIR$/run'])
-		
         manager.append(client)
 
         def server = new Node(null, 'configuration', [name: 'Minecraft Server', type: 'Application', factoryName: 'Application', default: 'false'])
-		
         server.appendNode('option', [name: 'MAIN_CLASS_NAME', value: 'net.minecraft.server.MinecraftServer'])
         server.appendNode('module', [name: 'Minecraft.server.main'])
         server.appendNode('option', [name: 'WORKING_DIRECTORY', value: '$PROJECT_DIR$/run_server'])
-		
+        server.appendNode('option', [name: 'PROGRAM_PARAMETERS', value: 'nogui'])
+
         manager.append(server)
 
-        def sw = new StringWriter()
-        new XmlNodePrinter(new PrintWriter(sw)).print(project)
-        file.text = sw.toString()
+        def writer = new StringWriter()
+        new XmlNodePrinter(new PrintWriter(writer)).print(project)
+        file.text = writer.toString()
     }
 }
 
@@ -141,5 +143,7 @@ task copyJars(type: Copy) {
     from project(':server').jar
     into "${rootDir}/build/libs"
 }
+
+jar.enabled = false
 
 build.dependsOn copyJars

@@ -357,6 +357,11 @@ public abstract class Minecraft implements Runnable {
 	}
 
 	public static File getAppDir(String var0) {
+		String gameDir = System.getenv("MCGAMEDIR");
+		if (gameDir != null) {
+			return new File(gameDir);
+		}
+
 		String var1 = System.getProperty("user.home", ".");
 		File var2;
 		switch(EnumOSMappingHelper.enumOSMappingArray[getOs().ordinal()]) {

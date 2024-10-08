@@ -59,8 +59,4 @@ public class Vector3D {
 		this.y = (float)((double)this.y / var1);
 		this.z = (float)((double)this.z / var1);
 	}
-
-	/*public Object clone() {
-		return this.clone();
-	}*/
 }
