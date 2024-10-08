@@ -1,0 +1,29 @@
+plugins {
+    id 'java'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+}
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    archiveBaseName = project.property('clientJarName')
+    
+    from sourceSets.main.output
+    
+    from('src/main/resources') {
+        into '/'
+    }
+    
+    manifest {
+        attributes 'Main-Class': 'net.minecraft.client.Minecraft'
+    }
+}

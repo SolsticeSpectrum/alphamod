@@ -1,0 +1,145 @@
+plugins {
+    id 'base'
+    id 'idea'
+}
+
+allprojects {
+    apply plugin: 'java'
+    
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+    
+    version = project.property('version')
+
+    repositories {
+        mavenCentral()
+        flatDir {
+            dirs "${rootDir}/libraries"
+        }
+    }
+}
+
+subprojects {
+    dependencies {
+        implementation name: 'jinput'
+        implementation name: 'lwjgl'
+        implementation name: 'lwjgl_util'
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+}
+
+task copyResources(type: Copy) {
+    from "${rootDir}/resources"
+    into "${rootDir}/run/.minecraft/resources"
+}
+
+task runClient(type: JavaExec) {
+    dependsOn ':client:classes', copyResources
+    group = 'run'
+    description = 'runs Minecraft client'
+    
+    main = 'net.minecraft.client.Minecraft'
+    classpath = project(':client').sourceSets.main.runtimeClasspath
+    
+    workingDir = file("${rootDir}/run")
+    
+    jvmArgs = [
+        "-Dorg.lwjgl.librarypath=${rootDir}/libraries/natives"
+    ]
+    
+    args = [project.property('defaultUsername')]
+    
+    environment 'APPDATA': "${rootDir}/run"
+    
+    doFirst {
+        file("${rootDir}/run/.minecraft").mkdirs()
+    }
+}
+
+task runServer(type: JavaExec) {
+    dependsOn ':server:classes'
+    group = 'run'
+    description = 'runs Minecraft server'
+    
+    main = 'net.minecraft.server.MinecraftServer'
+    classpath = project(':server').sourceSets.main.runtimeClasspath
+    
+    workingDir = file("${rootDir}/run_server")
+    
+    args = ['nogui']
+    
+    doFirst {
+        file("${rootDir}/run_server").mkdirs()
+    }
+}
+
+task genIdeaWorkspace {
+    group = 'ide'
+    description = 'generates idea configuration'
+    
+    doLast {
+        def file = file('.idea/workspace.xml')
+        def project
+        
+        if (!file.exists() || file.text.trim().empty) {
+            file.parentFile.mkdirs()
+            file.text = '''
+                <?xml version="1.0" encoding="UTF-8"?>
+                <project version="4">
+                  <component name="RunManager"/>
+                </project>
+            '''.trim()
+        }
+        
+        project = new XmlParser().parse(file)
+        def manager = project.component.find { it.@name == 'RunManager' }
+        
+        if (!manager) {
+            manager = project.appendNode('component', [name: 'RunManager'])
+        }
+        
+        manager.configuration.findAll { it.@name == 'Minecraft Client' || it.@name == 'Minecraft Server' }.each { manager.remove(it) }
+        
+        def client = new Node(null, 'configuration', [name: 'Minecraft Client', type: 'Application', factoryName: 'Application', default: 'false'])
+		
+        client.appendNode('option', [name: 'MAIN_CLASS_NAME', value: 'net.minecraft.client.Minecraft'])
+        client.appendNode('module', [name: 'Minecraft.client.main'])
+        client.appendNode('option', [name: 'WORKING_DIRECTORY', value: '$PROJECT_DIR$/run'])
+        client.appendNode('option', [name: 'VM_PARAMETERS', value: [
+            "-Dorg.lwjgl.librarypath=$rootDir/libraries/natives"
+        ].join(' ')])
+        client.appendNode('option', [name: 'PROGRAM_PARAMETERS', value: rootProject.property('defaultUsername')])
+
+        def env = client.appendNode('envs')
+
+        env.appendNode('env', [name: 'APPDATA', value: '$PROJECT_DIR$/run'])
+		
+        manager.append(client)
+
+        def server = new Node(null, 'configuration', [name: 'Minecraft Server', type: 'Application', factoryName: 'Application', default: 'false'])
+		
+        server.appendNode('option', [name: 'MAIN_CLASS_NAME', value: 'net.minecraft.server.MinecraftServer'])
+        server.appendNode('module', [name: 'Minecraft.server.main'])
+        server.appendNode('option', [name: 'WORKING_DIRECTORY', value: '$PROJECT_DIR$/run_server'])
+		
+        manager.append(server)
+
+        def sw = new StringWriter()
+        new XmlNodePrinter(new PrintWriter(sw)).print(project)
+        file.text = sw.toString()
+    }
+}
+
+tasks.idea.finalizedBy(genIdeaWorkspace)
+
+task copyJars(type: Copy) {
+    dependsOn ':client:jar', ':server:jar'
+    from project(':client').jar
+    from project(':server').jar
+    into "${rootDir}/build/libs"
+}
+
+build.dependsOn copyJars
