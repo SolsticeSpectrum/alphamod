@@ -1,6 +1,5 @@
 package com.sijobe.spc;
 
-
 import net.minecraft.src.World;
 
 /**

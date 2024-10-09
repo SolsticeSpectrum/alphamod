@@ -1,6 +1,5 @@
 package com.sijobe.spc;
 
-
 import net.minecraft.src.MovingObjectPosition;
 import net.minecraft.src.SPCEntity;
 

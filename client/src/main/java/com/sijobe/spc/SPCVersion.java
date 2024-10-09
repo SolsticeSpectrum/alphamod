@@ -2,7 +2,6 @@ package com.sijobe.spc;
 
 import java.util.Date;
 
-
 public class SPCVersion implements SPCVersionInterface {
 
    private String name;
