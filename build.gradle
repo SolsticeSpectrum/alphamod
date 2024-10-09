@@ -125,7 +125,6 @@ task genIdeaWorkspace {
         server.appendNode('option', [name: 'MAIN_CLASS_NAME', value: 'net.minecraft.server.MinecraftServer'])
         server.appendNode('module', [name: 'Minecraft.server.main'])
         server.appendNode('option', [name: 'WORKING_DIRECTORY', value: '$PROJECT_DIR$/run_server'])
-        server.appendNode('option', [name: 'PROGRAM_PARAMETERS', value: 'nogui'])
 
         manager.append(server)
 
