@@ -1,11 +1,11 @@
-package com.sijobe.spc;
+package net.minecraft.src;
 
 import java.awt.Desktop;
 import java.io.File;
 import java.net.URI;
 
+import com.sijobe.spc.plugin.SPCPlugin;
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.PlayerHelper;
 
 
 public class spc_AprilFools2012 extends SPCPlugin {

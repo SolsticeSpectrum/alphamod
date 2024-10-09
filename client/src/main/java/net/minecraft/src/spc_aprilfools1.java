@@ -1,8 +1,6 @@
-package com.sijobe.spc;
+package net.minecraft.src;
 
-import net.minecraft.src.EntityItem;
-import net.minecraft.src.Item;
-import net.minecraft.src.ItemStack;
+import com.sijobe.spc.plugin.SPCPlugin;
 
 import java.util.Random;
 

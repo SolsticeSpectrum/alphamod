@@ -1,6 +1,6 @@
-package com.sijobe.spc;
+package net.minecraft.src;
 
-import net.minecraft.src.MathHelper;
+import com.sijobe.spc.plugin.SPCPlugin;
 
 /**
  * Single Player Commands (http://bit.ly/spcmod) Plugin

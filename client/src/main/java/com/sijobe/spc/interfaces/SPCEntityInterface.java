@@ -1,5 +1,6 @@
-package com.sijobe.spc;
+package com.sijobe.spc.interfaces;
 
+import com.sijobe.spc.util.SPCPoint;
 import net.minecraft.src.Entity;
 
 /**

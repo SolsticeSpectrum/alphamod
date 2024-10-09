@@ -1,8 +1,8 @@
 package net.minecraft.src;
 
-import com.sijobe.spc.SPCEntityInterface;
-import com.sijobe.spc.SPCPoint;
-import com.sijobe.spc.SPCWorldInterface;
+import com.sijobe.spc.interfaces.SPCEntityInterface;
+import com.sijobe.spc.util.SPCPoint;
+import com.sijobe.spc.interfaces.SPCWorldInterface;
 
 /**
  * DESCRIPTION HERE

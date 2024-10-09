@@ -1,8 +1,9 @@
-package com.sijobe.spc;
+package com.sijobe.spc.worldedit;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
+import com.sijobe.spc.interfaces.SPCServerInterface;
 import com.sk89q.worldedit.WorldEdit;
 
 import net.minecraft.client.Minecraft;

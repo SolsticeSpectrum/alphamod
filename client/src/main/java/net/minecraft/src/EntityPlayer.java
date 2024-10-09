@@ -436,7 +436,7 @@ public abstract class EntityPlayer extends EntityLiving {
 		}
 	}
 
-	protected void damageEntity(int var1) {
+	public void damageEntity(int var1) {
 		int var2 = 25 - this.inventory.getTotalArmorValue();
 		int var3 = var1 * var2 + this.damageRemainder;
 		this.inventory.damageArmor(var1);

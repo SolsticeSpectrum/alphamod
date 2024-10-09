@@ -369,7 +369,7 @@ public abstract class EntityLiving extends Entity {
 		this.attackedAtYaw = 0.0F;
 	}
 
-	protected void damageEntity(int var1) {
+	public void damageEntity(int var1) {
 		this.health -= var1;
 	}
 

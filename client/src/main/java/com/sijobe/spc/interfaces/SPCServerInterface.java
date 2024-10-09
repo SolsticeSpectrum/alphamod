@@ -1,4 +1,4 @@
-package com.sijobe.spc;
+package com.sijobe.spc.interfaces;
 
 import net.minecraft.src.World;
 

@@ -1,5 +1,6 @@
-package com.sijobe.spc;
+package com.sijobe.spc.plugin;
 
+import com.sijobe.spc.util.SPCObjectHit;
 import net.minecraft.src.PlayerHelper;
 
 import java.util.List;

@@ -1,8 +1,7 @@
-package com.sijobe.spc;
+package net.minecraft.src;
 
-import net.minecraft.src.Block;
-import net.minecraft.src.MovingObjectPosition;
-import net.minecraft.src.PlayerHelper;
+import com.sijobe.spc.plugin.SPCPlugin;
+import com.sijobe.spc.util.SPCObjectHit;
 
 public class spc_paint extends SPCPlugin {
 

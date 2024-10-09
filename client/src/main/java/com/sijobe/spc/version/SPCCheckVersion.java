@@ -1,4 +1,4 @@
-package com.sijobe.spc;
+package com.sijobe.spc.version;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,6 +16,7 @@ import java.util.Vector;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import com.sijobe.spc.interfaces.SPCVersionInterface;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;

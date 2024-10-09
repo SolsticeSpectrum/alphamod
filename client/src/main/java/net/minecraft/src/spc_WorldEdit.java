@@ -1,9 +1,11 @@
-package com.sijobe.spc;
+package net.minecraft.src;
 
 import java.io.File;
 
+import com.sijobe.spc.plugin.SPCPlugin;
+import com.sijobe.spc.util.SPCObjectHit;
+import com.sijobe.spc.worldedit.WorldEditPlugin;
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.PlayerHelper;
 
 /**
  * The plugin class for WorldEdit. It uses the WorldEditPlugin class to load

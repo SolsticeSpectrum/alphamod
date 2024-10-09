@@ -1,5 +1,6 @@
-package com.sijobe.spc;
+package com.sijobe.spc.worldedit;
 
+import com.sijobe.spc.plugin.SPCPluginManager;
 import com.sk89q.worldedit.LocalWorld;
 import com.sk89q.worldedit.ServerInterface;
 import com.sk89q.worldedit.Vector;

@@ -1,4 +1,6 @@
-package com.sijobe.spc;
+package net.minecraft.src;
+
+import com.sijobe.spc.plugin.SPCPlugin;
 
 import java.lang.reflect.Method;
 

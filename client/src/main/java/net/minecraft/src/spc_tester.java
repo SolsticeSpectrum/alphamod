@@ -1,4 +1,8 @@
-package com.sijobe.spc;
+package net.minecraft.src;
+
+import com.sijobe.spc.SPCCommand;
+import com.sijobe.spc.plugin.SPCPlugin;
+import com.sijobe.spc.util.SPCObjectHit;
 
 public class spc_tester extends SPCPlugin {
    
@@ -42,7 +46,7 @@ public class spc_tester extends SPCPlugin {
    public void atUpdate() {
    }
    
-   @SPCCommand (cmd="test",help="hello world")
+   @SPCCommand(cmd="test",help="hello world")
    public void test(String args[]) {
       System.out.println("TEST!@@");
    }

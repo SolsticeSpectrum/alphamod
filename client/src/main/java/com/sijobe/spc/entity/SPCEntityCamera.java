@@ -1,4 +1,4 @@
-package com.sijobe.spc;
+package com.sijobe.spc.entity;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.Entity;

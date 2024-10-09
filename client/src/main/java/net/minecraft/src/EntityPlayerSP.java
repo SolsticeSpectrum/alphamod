@@ -9,8 +9,8 @@ import java.util.Vector;
 import javax.swing.JFrame;
 import javax.swing.JTextPane;
 
-import com.sijobe.spc.SPCEntityCamera;
-import com.sijobe.spc.SPCVersion;
+import com.sijobe.spc.entity.SPCEntityCamera;
+import com.sijobe.spc.version.SPCVersion;
 import org.lwjgl.opengl.Display;
 
 import net.minecraft.client.Minecraft;
@@ -451,7 +451,7 @@ public class EntityPlayerSP extends EntityPlayer
    }
 
    @Override
-   protected void damageEntity(int i) {
+   public void damageEntity(int i) {
       if (canRunSPC() && !ph.damage) {
          return;
       }

@@ -87,7 +87,14 @@ import java.text.SimpleDateFormat;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
-import com.sijobe.spc.*;
+import com.sijobe.spc.entity.SPCEntityCamera;
+import com.sijobe.spc.plugin.SPCPlugin;
+import com.sijobe.spc.plugin.SPCPluginManager;
+import com.sijobe.spc.util.SPCObjectHit;
+import com.sijobe.spc.util.SPCPoint;
+import com.sijobe.spc.util.Settings;
+import com.sijobe.spc.version.SPCCheckVersion;
+import com.sijobe.spc.version.SPCVersion;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;

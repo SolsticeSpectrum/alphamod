@@ -1,4 +1,4 @@
-package net.minecraft.src;
+package com.sijobe.spc.worldedit;
 
 import java.util.List;
 import java.util.Random;
@@ -15,6 +15,7 @@ import com.sk89q.worldedit.blocks.MobSpawnerBlock;
 import com.sk89q.worldedit.blocks.NoteBlock;
 import com.sk89q.worldedit.blocks.SignBlock;
 import com.sk89q.worldedit.regions.Region;
+import net.minecraft.src.*;
 
 
 /**
@@ -121,7 +122,7 @@ public class SPCLocalWorld extends com.sk89q.worldedit.LocalWorld {
    public int killMobs(Vector pos, int radius) {
       // Getting a list of Entities within radius
       List<Entity> entities = world.getEntitiesWithinAABBExcludingEntity(
-               (Entity)null,AxisAlignedBB.getBoundingBox(
+               (Entity)null, AxisAlignedBB.getBoundingBox(
                         pos.getX() - radius,pos.getY() - radius, pos.getZ() - radius, 
                         pos.getX() + radius,pos.getY() + radius, pos.getZ() + radius));
 

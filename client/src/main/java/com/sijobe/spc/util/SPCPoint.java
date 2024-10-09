@@ -1,4 +1,4 @@
-package com.sijobe.spc;
+package com.sijobe.spc.util;
 
 /**
  * Class provides a storage method for an x,y,z point on the map

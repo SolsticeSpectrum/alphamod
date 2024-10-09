@@ -1,9 +1,11 @@
-package com.sijobe.spc;
+package com.sijobe.spc.worldedit;
 
 import java.io.File;
 
+
 /**
- * DESCRIPTION HERE
+ * Instantiates the WorldEdit configuration class to provide configuration to 
+ * WorldEdit for use on Single Player.
  * 
  * @author simo_415
  * Copyright (C) 2010-2011 simo_415 - (http://bit.ly/spcmod)  
@@ -23,16 +25,23 @@ import java.io.File;
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with Single Player Commands. If not, see <http://www.gnu.org/licenses/>.
  */
-public interface SPCWorldInterface {
-   public void setBlock(SPCPoint position, int block);
-   public void setBlockWithNotify(SPCPoint position, int block);
-   public void setMetadata(SPCPoint position, int block);
-   public void setMetadataWithNotify(SPCPoint position, int block);
-   public int getBlock(SPCPoint position, int block);
-   public int getMetadata(SPCPoint position, int block);
-   public SPCPoint getSpawn();
-   public void setSpawn(SPCPoint position);
-   public File getWorldDir();
-   public long getTime();
-   public void setTime(long time);
+public class SPCLocalConfiguration extends com.sk89q.worldedit.util.PropertiesConfiguration {
+
+   public File mcdir;
+   
+   /**
+    * Initialises the class
+    */
+   public SPCLocalConfiguration(File mcdir) {
+      super(new File(mcdir,"mods/sppcommands/worldedit.properties"));
+      this.mcdir = mcdir;
+   }
+   
+   /**
+    * @see com.sk89q.worldedit.LocalConfiguration#getWorkingDirectory()
+    */
+   @Override
+   public File getWorkingDirectory() {
+      return mcdir;
+   }
 }

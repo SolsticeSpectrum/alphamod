@@ -1,4 +1,6 @@
-package com.sijobe.spc;
+package com.sijobe.spc.version;
+
+import com.sijobe.spc.interfaces.SPCVersionInterface;
 
 import java.util.Date;
 
