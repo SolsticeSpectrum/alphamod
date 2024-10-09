@@ -24,6 +24,7 @@ subprojects {
         implementation name: 'jinput'
         implementation name: 'lwjgl'
         implementation name: 'lwjgl_util'
+        implementation name: 'WorldEdit'
     }
 
     tasks.withType(JavaCompile) {
