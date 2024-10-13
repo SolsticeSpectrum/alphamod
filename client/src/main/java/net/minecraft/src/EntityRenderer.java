@@ -1,14 +1,15 @@
 package net.minecraft.src;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.FloatBuffer;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Random;
 import net.minecraft.client.Minecraft;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GLContext;
-import org.lwjgl.opengl.NVFogDistance;
+import org.lwjgl.opengl.*;
 import org.lwjgl.util.glu.GLU;
 
 public class EntityRenderer {
@@ -51,6 +52,10 @@ public class EntityRenderer {
 	float fogColorBlue;
 	private float fogColor2;
 	private float fogColor1;
+	private int shaderProgram = 0;
+	private boolean shadersEnabled = false;
+	private boolean f10Pressed = false;
+	private long startTime;
 
 	public EntityRenderer(Minecraft var1) {
 		this.mc = var1;
@@ -429,7 +434,81 @@ public class EntityRenderer {
 		}
 	}
 
+	private void initShaders() {
+		try {
+			File dir = new File(Minecraft.getMinecraftDir(), "shaders");
+			String vertSrc = new String(Files.readAllBytes(new File(dir, "shader.vert").toPath()));
+			String fragSrc = new String(Files.readAllBytes(new File(dir, "shader.frag").toPath()));
+
+			int vert = GL20.glCreateShader(GL20.GL_VERTEX_SHADER);
+			int frag = GL20.glCreateShader(GL20.GL_FRAGMENT_SHADER);
+
+			GL20.glShaderSource(vert, vertSrc);
+			GL20.glShaderSource(frag, fragSrc);
+
+			GL20.glCompileShader(vert);
+			GL20.glCompileShader(frag);
+
+			shaderProgram = GL20.glCreateProgram();
+			GL20.glAttachShader(shaderProgram, vert);
+			GL20.glAttachShader(shaderProgram, frag);
+			GL20.glLinkProgram(shaderProgram);
+
+			if (GL20.glGetProgrami(shaderProgram, GL20.GL_LINK_STATUS) == GL11.GL_FALSE) {
+				System.err.println("Shader linking failed");
+				System.err.println(GL20.glGetProgramInfoLog(shaderProgram, 1024));
+			}
+
+			GL20.glValidateProgram(shaderProgram);
+			if (GL20.glGetProgrami(shaderProgram, GL20.GL_VALIDATE_STATUS) == GL11.GL_FALSE) {
+				System.err.println("Shader validation failed");
+				System.err.println(GL20.glGetProgramInfoLog(shaderProgram, 1024));
+			}
+		} catch (IOException e) {
+		}
+	}
+
+	private void updateUniforms(float ticks) {
+		int time = GL20.glGetUniformLocation(shaderProgram, "time");
+		GL20.glUniform1f(time, (System.currentTimeMillis() - startTime) / 1000.0f);
+
+		int random = GL20.glGetUniformLocation(shaderProgram, "random");
+		GL20.glUniform1f(random, ticks);
+
+		int res = GL20.glGetUniformLocation(shaderProgram, "resolution");
+		GL20.glUniform2f(res, mc.displayWidth, mc.displayHeight);
+
+		int fog = GL20.glGetUniformLocation(shaderProgram, "fogColor");
+		GL20.glUniform3f(fog, fogColorRed, fogColorGreen, fogColorBlue);
+
+		int pos = GL20.glGetUniformLocation(shaderProgram, "viewPos");
+		EntityLiving view = mc.renderViewEntity;
+		GL20.glUniform3f(pos, (float)view.posX, (float)view.posY, (float)view.posZ);
+
+		int tex = GL20.glGetUniformLocation(shaderProgram, "texture");
+		GL20.glUniform1i(tex, 0);
+	}
+
+	public void updateInput() {
+		if (Keyboard.isKeyDown(Keyboard.KEY_F10)) {
+			if (!f10Pressed) {
+				shadersEnabled = !shadersEnabled;
+				System.out.println("Shaders " + (shadersEnabled ? "enabled" : "disabled"));
+				f10Pressed = true;
+			}
+		} else {
+			f10Pressed = false;
+		}
+	}
+
 	public void renderWorld(float var1, long var2) {
+		if (shaderProgram == 0) {
+			initShaders();
+			startTime = System.currentTimeMillis();
+		}
+
+		updateInput();
+
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		if(this.mc.renderViewEntity == null) {
@@ -468,9 +547,17 @@ public class EntityRenderer {
 			GL11.glEnable(GL11.GL_CULL_FACE);
 			this.setupCameraTransform(var1, var18);
 			ClippingHelperImpl.getInstance();
+
 			if(this.mc.gameSettings.renderDistance < 2) {
 				this.setupFog(-1, var1);
 				var5.renderSky(var1);
+			}
+
+			if (shadersEnabled) {
+				GL20.glUseProgram(shaderProgram);
+				updateUniforms(var1);
+			} else {
+				GL20.glUseProgram(0);
 			}
 
 			GL11.glEnable(GL11.GL_FOG);
@@ -555,6 +642,7 @@ public class EntityRenderer {
 			}
 
 			this.renderRainSnow(var1);
+
 			GL11.glDisable(GL11.GL_FOG);
 			if(this.pointedEntity != null) {
 			}
@@ -564,6 +652,11 @@ public class EntityRenderer {
 			var5.renderClouds(var1);
 			GL11.glDisable(GL11.GL_FOG);
 			this.setupFog(1, var1);
+
+			if (shadersEnabled) {
+				GL20.glUseProgram(0);
+			}
+
 			if(this.cameraZoom == 1.0D) {
 				GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
 				this.func_4135_b(var1, var18);
